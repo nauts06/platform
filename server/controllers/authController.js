@@ -3,9 +3,18 @@ const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
 const generateToken = require('../utils/generateToken');
 
-exports.registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
 
+
+exports.registerUser = async (req, res) => {
+  const { name, email, password, confirmPassword } = req.body;
+
+  if (!name || !email || !password || !confirmPassword) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  if (password !== confirmPassword) {
+    return res.status(400).json({ message: 'Passwords do not match' });
+  }
 
   try {
     const userExists = await User.findOne({ email });
@@ -24,6 +33,7 @@ exports.registerUser = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+
 
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;

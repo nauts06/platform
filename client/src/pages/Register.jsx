@@ -4,7 +4,13 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -15,10 +21,14 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    
-    
+    if (form.password !== form.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
     try {
-      const data = await registerUser(form);
+      const { name, email, password , confirmPassword} = form;
+      const data = await registerUser({ name, email, password ,confirmPassword });
       login(data);
       navigate("/login");
     } catch (err) {
@@ -41,7 +51,7 @@ const Register = () => {
               onChange={handleChange}
               placeholder="Your name"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -49,12 +59,12 @@ const Register = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
             <input
               name="email"
+              type="email"
               value={form.email}
               onChange={handleChange}
-              type="email"
               placeholder="you@example.com"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -62,12 +72,25 @@ const Register = () => {
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
               name="password"
+              type="password"
               value={form.password}
               onChange={handleChange}
-              type="password"
               placeholder="••••••••"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+            <input
+              name="confirmPassword"
+              type="password"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              placeholder="••••••••"
+              required
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
